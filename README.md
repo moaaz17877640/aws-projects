@@ -246,6 +246,7 @@ Completed `deploy.yml` + `go_live_checklist.md` + the Alarms table filled in
 ## 📁 Starter Code Structure
 
 ```
+code :: https://github.com/aws-samples/aws-three-tier-web-architecture-workshop
 retailedge-aws/
 ├── terraform/
 │   ├── main.tf              ← Layer 2: VPC  (incomplete — you complete it)
@@ -257,10 +258,7 @@ retailedge-aws/
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml       ← Layer 5: CI/CD Pipeline  (incomplete — you complete it)
-├── app/
-│   ├── app.py               ← Flask sample app  (complete — do not modify)
-│   ├── requirements.txt     ← Python dependencies
-│   └── Dockerfile           ← Docker build  (complete — do not modify)
+
 └── README.md
 ```
 
