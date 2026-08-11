@@ -56,9 +56,6 @@ Sarah has scheduled your kick-off meeting. Before approving the budget, she want
 - [ ] **Task 1.2** — Choose a **Migration Strategy** for each component and justify your choice:
 | Component | Strategy Options | Your Choice | Justification |
 |---|---|---|---|
-| Web Server | Rehost / Replatform | **Replatform** | Moving to EC2 with Auto Scaling solves Black Friday downtime without code changes |
-| Application | Replatform / Refactor | **Replatform** | Fast migration (90 days) and solves manual deployment errors |
-| Database | Rehost / Replatform | **Replatform** | RDS Multi-AZ gives automatic backups and high availability |
 
 - [ ] **Task 1.3** — Produce a TCO (Total Cost of Ownership) comparison:
   - Current on-premises cost: **$18,000/year**
@@ -66,11 +63,6 @@ Sarah has scheduled your kick-off meeting. Before approving the budget, she want
   - Build a **3-year projection** comparing both options
 
 - **AWS Monthly Cost:** $166.65
-- **AWS Annual Cost:** $1,999.80
-- **Current 3-Year Cost:** $54,000
-- **AWS 3-Year Cost:** $5,999.40
-- **Total Savings (3 Years):** $48,000.60
-
 
 #### Concepts Covered
 - AWS Well-Architected Framework (5 Pillars)
