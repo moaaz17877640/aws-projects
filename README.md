@@ -1,4 +1,100 @@
-# 🏗️ Cloud Migration Task — Solutions Architect Simulation
+# Cloud Architecture Portfolio Plan
+
+This repository is a README-based plan for four cloud architecture projects. The existing RetailEdge exercise is project 1; the other three projects should be documented in the same format before any implementation begins.
+
+## Required content for every project
+
+1. **Cost report** - assumptions, monthly estimate, three-year view, and optimization options.
+2. **System architecture design** - diagram, service choices, data flow, security boundaries, availability, and failure handling.
+3. **Infrastructure as Code** - Terraform structure, variables, outputs, security controls, and validation commands.
+4. **Project running** - GitHub source repository, setup steps, local run command, deployment steps, smoke test, and rollback notes.
+
+## Four-project roadmap
+
+| Project | Architecture focus | GitHub source to study |
+|---|---|---|
+| 1. RetailEdge e-commerce migration | AWS three-tier architecture, scaling, RDS, Redis, CI/CD | [AWS three-tier web architecture workshop](https://github.com/aws-samples/aws-three-tier-web-architecture-workshop) |
+| 2. Serverless image pipeline | S3 events, Lambda processing, CloudFront | [AWS Serverless Image Handler](https://github.com/awslabs/serverless-image-handler) |
+| 3. Container voting platform | Docker, ECS/Fargate, ALB, managed data services | [Docker example voting app](https://github.com/dockersamples/example-voting-app) |
+| 4. Event analytics platform | API ingestion, Kinesis, S3 data lake, Athena | [AWS Serverless Data Analytics Pipeline](https://github.com/aws-samples/aws-serverless-data-analytics-pipeline) |
+
+## Source code and similar examples
+
+| Project | Source code to use | Similar example |
+|---|---|---|
+| RetailEdge | [AWS three-tier web architecture workshop](https://github.com/aws-samples/aws-three-tier-web-architecture-workshop) | [AWS reference architecture examples](https://github.com/aws-samples/aws-refarch-cloudformation) |
+| Museum Image Archive | [AWS Serverless Image Handler](https://github.com/awslabs/serverless-image-handler) | [AWS serverless image resizing](https://github.com/aws-samples/serverless-image-resizing) |
+| Campus Election Voting | [Docker example voting app](https://github.com/dockersamples/example-voting-app) | [Amazon ECS patterns](https://github.com/aws-samples/amazon-ecs-patterns) |
+| Cold-Chain Analytics | [AWS Serverless Data Analytics Pipeline](https://github.com/aws-samples/aws-serverless-data-analytics-pipeline) | [Amazon Kinesis examples](https://github.com/aws-samples/amazon-kinesis-data-analytics-examples) |
+
+Clone the primary source repository for the project, pin the commit used, and use the similar example only for comparison. Read its license and documentation before reusing code.
+
+## Instructor hints and graduation checkpoints
+
+Give students the following hints progressively rather than all at once:
+
+- **Architecture:** Ask what happens when one Availability Zone, instance, database node, or deployment fails. Require a reason for every managed service.
+- **Cost:** Ask students to show their usage assumptions before accepting a price. Check that storage, data transfer, backups, logs, and idle capacity are included.
+- **IaC:** Ask them to run `terraform fmt`, `terraform validate`, and `terraform plan`. Review security groups, IAM permissions, encryption, state handling, and secret management.
+- **Running project:** Require a reproducible setup from a clean machine, a smoke-test result, screenshots or logs, and a rollback demonstration.
+- **Graduation evidence:** Collect the architecture diagram, cost spreadsheet, Terraform plan, source commit, test results, incident or failure analysis, and a short presentation explaining trade-offs.
+
+Do not grade students on copying the linked repository. Grade their understanding, traceability of changes, security reasoning, cost assumptions, and ability to recover from failure.
+
+## Separate project README files
+
+- Project 1: this file, the RetailEdge e-commerce migration
+- [Project 2 README](README-project-2-image-archive.md)
+- [Project 3 README](README-project-3-campus-voting.md)
+- [Project 4 README](README-project-4-logistics-analytics.md)
+
+## Architecture design documents
+
+- [Project 1 design](DESIGN-project-1-retailedge.md)
+- [Project 2 design](DESIGN-project-2-image-archive.md)
+- [Project 3 design](DESIGN-project-3-campus-voting.md)
+- [Project 4 design](DESIGN-project-4-logistics-analytics.md)
+
+## README deliverable template
+
+For each project, copy this checklist into its section and complete it:
+
+```text
+Project name:
+Business problem:
+GitHub source and pinned commit:
+
+1. Cost report
+  - Usage assumptions:
+  - Monthly estimate:
+  - Three-year estimate:
+  - Cost controls:
+
+2. System architecture design
+  - Architecture diagram:
+  - Request and data flow:
+  - Security boundaries:
+  - Availability and recovery:
+
+3. Infrastructure as Code
+  - Terraform files:
+  - terraform fmt -check:
+  - terraform validate:
+  - terraform plan:
+
+4. Project running
+  - Prerequisites:
+  - Local run command:
+  - Deployment command:
+  - Smoke test:
+  - Rollback procedure:
+```
+
+Do not commit AWS credentials. Record the exact upstream commit used and verify all costs in the AWS Pricing Calculator before deployment.
+
+---
+
+# RetailEdge Cloud Migration Task — Solutions Architect Simulation
 ## RetailEdge Inc. — AWS Three-Tier Architecture
 
 ---
@@ -307,3 +403,129 @@ retailedge-aws/
 
 *This task is designed as a Solutions Architect simulation. RetailEdge Inc. is a fictional company.*
 *Think like an architect, not just a developer — every decision needs a reason.* 🏗️
+
+---
+
+# Project 2 - Serverless Image Pipeline
+
+**GitHub source:** [AWS Serverless Image Handler](https://github.com/awslabs/serverless-image-handler)
+
+## Business problem
+
+Build an image upload service that stores originals durably and creates thumbnails asynchronously without paying for idle servers.
+
+## Cost report
+
+Estimate S3 storage and requests, Lambda duration, CloudFront transfer, and CloudWatch Logs for 100,000 uploads/month, 2 MB average originals, three thumbnails per image, and 100 GB/month of delivery. Document monthly cost, a 3-year projection, and savings from lifecycle rules, Intelligent-Tiering, caching, log retention, and budgets.
+
+## Architecture design
+
+```mermaid
+flowchart LR
+  User --> Input[S3 input bucket]
+  Input --> Event[Object-created event]
+  Event --> Worker[Lambda image worker]
+  Worker --> Output[S3 output bucket]
+  User --> CDN[CloudFront]
+  CDN --> Output
+  Worker --> Logs[CloudWatch Logs]
+```
+
+Keep input and output prefixes separate, make processing idempotent, validate size and content type, encrypt both buckets, and keep them private behind CloudFront.
+
+## IaC
+
+Terraform must define the buckets, public-access blocks, lifecycle rules, event notification, Lambda, least-privilege IAM, CloudFront, and alarms. Run `terraform fmt -check`, `terraform init -backend=false`, `terraform validate`, and `terraform plan`.
+
+## Running
+
+```powershell
+git clone https://github.com/awslabs/serverless-image-handler.git upstream
+Set-Location upstream
+```
+
+Pin the upstream commit, follow its deployment guide, upload a sample image, and verify the thumbnail. Roll back by disabling the event and restoring the previous Lambda version.
+
+---
+
+# Project 3 - Container Voting Platform
+
+**GitHub source:** [Docker example voting app](https://github.com/dockersamples/example-voting-app)
+
+## Business problem
+
+Run a voting service that handles traffic bursts, deploys consistently, and recovers quickly when a container fails.
+
+## Cost report
+
+Estimate ECS/Fargate tasks, the Application Load Balancer, ECR storage, Redis, the managed database, logs, and data transfer. Provide monthly and 3-year totals. Reduce cost with autoscaling, small staging tasks, ECR lifecycle rules, log retention, and reserved capacity only after usage is stable.
+
+## Architecture design
+
+```mermaid
+flowchart LR
+  User --> ALB[Application Load Balancer]
+  ALB --> ECS[ECS services across two AZs]
+  ECS --> Redis[ElastiCache Redis]
+  ECS --> DB[(Managed database)]
+  CICD[GitHub Actions] --> ECR[ECR]
+  ECR --> ECS
+```
+
+Put tasks in private subnets, expose only the ALB, use immutable ECR tags, health checks, encrypted secrets, and a previous task definition for rollback.
+
+## IaC
+
+Terraform must define the VPC, subnets, ALB, ECS cluster and services, ECR, IAM, security groups, logs, Redis, and database. Run `terraform fmt -check`, `terraform init -backend=false`, `terraform validate`, and `terraform plan`. No data service may be internet-facing.
+
+## Running
+
+```powershell
+git clone https://github.com/dockersamples/example-voting-app.git upstream
+Set-Location upstream
+docker compose up --build
+```
+
+Submit a vote and verify the result. For AWS, build, scan, push, deploy to staging, then promote the tested task definition. Roll back by selecting the previous ECS task definition.
+
+---
+
+# Project 4 - Event Analytics Platform
+
+**GitHub source:** [AWS Serverless Data Analytics Pipeline](https://github.com/aws-samples/aws-serverless-data-analytics-pipeline)
+
+## Business problem
+
+Ingest application events, retain raw data for replay, and provide analytics without operating a permanent analytics server.
+
+## Cost report
+
+Estimate API Gateway, Lambda, Kinesis, S3, transformation, Athena, CloudWatch, and dashboard costs for 10 million events/day, 1 KB average events, 30-day raw retention, and 2 TB/month queried. Document monthly and 3-year totals. Reduce cost with partitions, Parquet, file compaction, lifecycle rules, and Athena scan limits.
+
+## Architecture design
+
+```mermaid
+flowchart LR
+  Producer[Event producer] --> API[API Gateway]
+  API --> Ingest[Lambda ingestion]
+  Ingest --> Stream[Kinesis stream]
+  Stream --> Transform[Stream transform]
+  Transform --> Lake[S3 data lake]
+  Lake --> Query[Athena]
+  Query --> Dashboard[Dashboard]
+```
+
+Authenticate producers, validate schemas, encrypt the stream and buckets, partition curated data by date, retain raw data for replay, and alarm on errors, iterator age, throttles, and query spend.
+
+## IaC
+
+Terraform must define the API, Lambda IAM, Kinesis, raw and curated S3 zones, encryption, lifecycle, Glue catalog, Athena workgroup, alarms, and dashboard permissions. Run `terraform fmt -check`, `terraform init -backend=false`, `terraform validate`, and `terraform plan`.
+
+## Running
+
+```powershell
+git clone https://github.com/aws-samples/aws-serverless-data-analytics-pipeline.git upstream
+Set-Location upstream
+```
+
+Pin the source commit, follow its prerequisites, publish a sample event, and verify query output. Test replay from one raw partition. Roll back by disabling ingestion, preserving raw data, and reverting the transform or consumer.
